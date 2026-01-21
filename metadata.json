@@ -1,0 +1,7 @@
+{
+  "name": "GeoSentinel Scan",
+  "description": "An instant geological rock and mineral scanner with drainage-aware intelligence, designed for field explorers and surveyors.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
