@@ -12,10 +12,11 @@ interface RockModelProps {
 const RockModel: React.FC<RockModelProps> = ({ identification }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   
-  // Map physical characteristics to visual material properties
+  // Map physical characteristics to visual material and geometry properties
   const rockStyle = useMemo(() => {
     const { color, hardness, grainSize } = identification.physicalCharacteristics;
-    const lithology = identification.lithology.toLowerCase();
+    const { lithology } = identification;
+    const lithologyLower = lithology.toLowerCase();
     
     // 1. Base Color Logic
     let baseColor = '#555555';
@@ -36,33 +37,32 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
     const roughness = Math.max(0.1, 1 - (hardnessVal / 10));
     
     // 3. Dynamic Metalness Logic
-    // Start with base metalness from hardness
-    let metalness = Math.min(0.2, hardnessVal / 40);
-
-    // Check for metallic keywords in color
-    const metallicKeywords = ['gold', 'silver', 'metallic', 'bronze', 'copper', 'brassy', 'lustrous', 'shiny', 'galena', 'pyrite'];
-    if (metallicKeywords.some(keyword => colorLower.includes(keyword))) {
-      metalness += 0.5;
+    let metalness = 0;
+    const highMetallicKeywords = ['gold', 'silver', 'metallic', 'platinum', 'brassy'];
+    const midMetallicKeywords = ['bronze', 'copper', 'lustrous', 'shiny', 'sub-metallic', 'splendent'];
+    
+    if (highMetallicKeywords.some(kw => colorLower.includes(kw))) {
+      metalness += 0.6;
+    } else if (midMetallicKeywords.some(kw => colorLower.includes(kw))) {
+      metalness += 0.3;
     }
 
-    // Check for metallic minerals in petrography if available
     if (identification.petrography) {
-      const metallicMinerals = [
-        'Gold', 'Silver', 'Copper', 'Pyrite', 'Chalcopyrite', 
-        'Galena', 'Magnetite', 'Hematite', 'Pyrrhotite', 'Arsenopyrite'
-      ];
-      
-      const allMinerals = [
+      const nativeMetals = ['gold', 'silver', 'copper', 'platinum', 'palladium'];
+      const highSulfides = ['pyrite', 'chalcopyrite', 'galena', 'bornite', 'stibnite', 'molybdenite', 'arsenopyrite', 'pyrrhotite'];
+      const metallicOxides = ['magnetite', 'hematite', 'ilmenite', 'chromite', 'cassiterite', 'rutile'];
+
+      const mineralsInSpecimen = [
         ...Object.keys(identification.petrography.primaryMinerals || {}),
         ...Object.keys(identification.petrography.accessoryMinerals || {})
-      ];
+      ].map(m => m.toLowerCase());
 
-      if (allMinerals.some(m => metallicMinerals.some(metal => m.toLowerCase().includes(metal.toLowerCase())))) {
-        metalness += 0.4;
-      }
+      if (mineralsInSpecimen.some(m => nativeMetals.some(metal => m.includes(metal)))) metalness += 0.8;
+      else if (mineralsInSpecimen.some(m => highSulfides.some(sulfide => m.includes(sulfide)))) metalness += 0.5;
+      else if (mineralsInSpecimen.some(m => metallicOxides.some(oxide => m.includes(oxide)))) metalness += 0.3;
     }
-
-    metalness = Math.min(0.95, metalness); // Cap metalness for realism
+    metalness += (hardnessVal / 20) * 0.1;
+    metalness = Math.min(0.98, metalness);
 
     // 4. Grain Size / Texture Logic (Procedural Distortion)
     const grainLower = grainSize.toLowerCase();
@@ -78,7 +78,6 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
     }
 
     // 5. Grain Boundary Logic
-    // Sutured and interlocking boundaries suggest more surface complexity (distortion)
     if (identification.petrography?.grainBoundaries) {
       const boundariesLower = identification.petrography.grainBoundaries.toLowerCase();
       if (boundariesLower.includes('sutured')) distort += 0.25;
@@ -86,11 +85,29 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
       if (boundariesLower.includes('embayed')) distort += 0.2;
       if (boundariesLower.includes('jagged')) distort += 0.3;
     }
+    distort = Math.min(0.85, distort);
 
-    distort = Math.min(0.85, distort); // Cap distortion to prevent visual artifacts
+    // 6. Geometry Variance (Lithology + Roundness)
+    // Sedimentary rocks tend to be more clastic and often show bedding/flattening
+    let scale: [number, number, number] = [1, 1, 1];
+    if (lithologyLower.includes('sedimentary')) {
+      scale = [1.3, 0.7, 1.1]; // Flattened/Oblate
+    } else if (lithologyLower.includes('metamorphic')) {
+      scale = [1.1, 0.85, 1.1]; // Slightly compressed by pressure
+    }
 
-    // Lithology adjustment
-    if (lithology.includes('metamorphic')) speed = 0.2; 
+    // Provenance Roundness affects subdivision detail
+    // Angular = sharp edges (low detail), Rounded = sphere-like (high detail)
+    let detail = 3;
+    const roundness = identification.provenance.roundness;
+    switch (roundness) {
+      case 'Angular': detail = 0; break;
+      case 'Sub-angular': detail = 1; break;
+      case 'Sub-rounded': detail = 2; break;
+      case 'Rounded': detail = 5; break;
+    }
+
+    if (lithologyLower.includes('metamorphic')) speed = 0.2; 
 
     return {
       color: baseColor,
@@ -98,6 +115,8 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
       metalness,
       distort,
       speed,
+      scale,
+      detail
     };
   }, [identification]);
 
@@ -110,8 +129,8 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
 
   return (
     <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
-      <mesh ref={meshRef} castShadow receiveShadow>
-        <dodecahedronGeometry args={[1, 4]} />
+      <mesh ref={meshRef} castShadow receiveShadow scale={rockStyle.scale}>
+        <dodecahedronGeometry args={[1, rockStyle.detail]} />
         <MeshDistortMaterial 
           color={rockStyle.color} 
           roughness={rockStyle.roughness} 
