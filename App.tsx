@@ -118,9 +118,11 @@ const App: React.FC = () => {
             <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">v4.5 Geologic Lab Suite</p>
           </div>
         </div>
-        <div className="hidden md:flex flex-col items-end text-right">
-           <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic">Analytical Head: Muhammad Yasin Khan</span>
-           <span className="text-sm font-bold text-slate-200 uppercase tracking-tighter">Neural Lab System Active</span>
+        <div className="hidden md:flex flex-col items-end text-right gap-2">
+           <div className="flex flex-col items-end">
+             <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic">Analytical Head: Muhammad Yasin Khan</span>
+             <span className="text-sm font-bold text-slate-200 uppercase tracking-tighter">Neural Lab System Active</span>
+           </div>
         </div>
       </header>
 
@@ -465,17 +467,77 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <footer className="mt-auto py-12 text-center border-t border-slate-900/50">
-        <div className="max-w-4xl mx-auto space-y-4">
-          <div className="flex flex-wrap items-center justify-center gap-12 opacity-60 mb-6">
-             <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Grounding Engine: Google Search</div>
-             <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Logic: Gemini 3 Pro/Flash</div>
-             <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Mode: Advanced Petrology</div>
+      <footer className="mt-auto py-16 bg-slate-900/50 backdrop-blur-3xl border-t border-slate-800/50 rounded-t-[3rem] shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+        <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12">
+          
+          {/* Column 1: Core Identity */}
+          <div className="space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <span className="text-xl font-black tracking-tighter uppercase italic text-white">GeoSentinel <span className="text-emerald-500">Pro</span></span>
+            </div>
+            <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-xs">
+              A high-fidelity geological analysis and petrography platform built for field professionals and academic researchers.
+            </p>
+            <div className="pt-4 border-t border-slate-800/50">
+              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2 italic underline underline-offset-4 decoration-emerald-900">Expert App Architect</p>
+              <p className="text-sm font-black text-white uppercase tracking-tighter italic">Muhammad Yasin Khan</p>
+              <p className="text-[9px] font-bold text-slate-500 uppercase mt-1 tracking-widest">Lead Systems Engineer & Geologist</p>
+            </div>
           </div>
-          <div className="space-y-3">
-            <p className="text-[12px] font-black text-emerald-500 uppercase tracking-[0.4em]">Expert App Architect: Muhammad Yasin Khan</p>
-            <p className="text-[12px] font-black text-cyan-500 uppercase tracking-[0.4em]">Powered By: Google Gemini 3 Flash Preview</p>
-            <p className="text-[9px] font-bold text-slate-700 uppercase tracking-[0.2em] mt-6 opacity-40 italic">GeoSentinel Diagnostic Interface v4.5</p>
+
+          {/* Column 2: Tech Stack Metadata */}
+          <div className="space-y-6">
+            <h6 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">System Engine Metadata</h6>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-[10px] font-black text-cyan-500">AI</div>
+                <div>
+                  <p className="text-[10px] font-black text-white uppercase tracking-widest">Inference Core</p>
+                  <p className="text-[9px] font-bold text-slate-500">Powered By: Google Gemini 3 Flash Preview</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-[10px] font-black text-emerald-500">WEB</div>
+                <div>
+                  <p className="text-[10px] font-black text-white uppercase tracking-widest">Knowledge Base</p>
+                  <p className="text-[9px] font-bold text-slate-500">Real-time Google Search Grounding</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-[10px] font-black text-orange-500">VIS</div>
+                <div>
+                  <p className="text-[10px] font-black text-white uppercase tracking-widest">Visualization Pipeline</p>
+                  <p className="text-[9px] font-bold text-slate-500">Nano-Banana Gen-AI Render Engine</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Column 3: Diagnostic Specs */}
+          <div className="space-y-6">
+            <h6 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Application Diagnostic</h6>
+            <div className="bg-black/50 p-6 rounded-3xl border border-slate-800/50 space-y-3">
+              <div className="flex justify-between items-center text-[9px] font-black uppercase">
+                <span className="text-slate-500">App Version</span>
+                <span className="text-white">v4.5.120-STABLE</span>
+              </div>
+              <div className="flex justify-between items-center text-[9px] font-black uppercase">
+                <span className="text-slate-500">Petrology DB</span>
+                <span className="text-emerald-500">Region-Optimized (Indus Basin)</span>
+              </div>
+              <div className="flex justify-between items-center text-[9px] font-black uppercase">
+                <span className="text-slate-500">Lab Interface</span>
+                <span className="text-cyan-500">Web-GL (Three.js) High Detail</span>
+              </div>
+            </div>
+            <p className="text-[8px] font-black text-slate-700 uppercase text-center tracking-[0.5em] opacity-50">
+              PROPRIETARY GEOSENTINEL DATASTREAM • 2025
+            </p>
           </div>
         </div>
       </footer>

@@ -5,6 +5,13 @@ import { OrbitControls, PerspectiveCamera, Float, ContactShadows, Environment, M
 import * as THREE from 'three';
 import { RockIdentification } from '../types';
 
+// Fix for JSX intrinsic element errors in React Three Fiber by defining local component constants
+const Mesh = 'mesh' as any;
+const DodecahedronGeometry = 'dodecahedronGeometry' as any;
+const AmbientLight = 'ambientLight' as any;
+const SpotLight = 'spotLight' as any;
+const PointLight = 'pointLight' as any;
+
 interface RockModelProps {
   identification: RockIdentification;
 }
@@ -129,8 +136,8 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
 
   return (
     <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
-      <mesh ref={meshRef} castShadow receiveShadow scale={rockStyle.scale}>
-        <dodecahedronGeometry args={[1, rockStyle.detail]} />
+      <Mesh ref={meshRef} castShadow receiveShadow scale={rockStyle.scale}>
+        <DodecahedronGeometry args={[1, rockStyle.detail]} />
         <MeshDistortMaterial 
           color={rockStyle.color} 
           roughness={rockStyle.roughness} 
@@ -138,7 +145,7 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
           distort={rockStyle.distort} 
           speed={rockStyle.speed}
         />
-      </mesh>
+      </Mesh>
     </Float>
   );
 };
@@ -146,6 +153,7 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
 export const SpecimenViewer3D: React.FC<{ identification: RockIdentification }> = ({ identification }) => {
   const confidencePercent = Math.round(identification.confidence * 100);
   const { hardness, grainSize, color } = identification.physicalCharacteristics;
+  const { environment, origin, commonUses } = identification.metadata;
   
   return (
     <div className="w-full h-full min-h-[400px] bg-slate-900/40 rounded-3xl relative overflow-hidden border border-slate-800 shadow-inner group">
@@ -175,9 +183,29 @@ export const SpecimenViewer3D: React.FC<{ identification: RockIdentification }> 
         </div>
       </div>
 
-      {/* Bottom Left Physical Specs HUD */}
-      <div className="absolute bottom-6 left-6 z-10 flex flex-col gap-2 pointer-events-none">
-        <div className="bg-slate-950/80 backdrop-blur-md border border-slate-800 rounded-xl p-4 min-w-[160px] shadow-2xl">
+      {/* Bottom Left Specs HUD (Physical + Contextual) */}
+      <div className="absolute bottom-6 left-6 z-10 flex flex-col gap-3 pointer-events-none max-w-[220px]">
+        {/* Contextual Metadata Block */}
+        <div className="bg-slate-950/80 backdrop-blur-md border border-slate-800 rounded-xl p-4 shadow-2xl">
+          <span className="text-[9px] font-black text-cyan-500 uppercase tracking-[0.2em] block mb-3 border-b border-cyan-900/30 pb-1">Geologic Context</span>
+          <div className="space-y-3">
+            <div className="flex flex-col">
+              <span className="text-[7px] font-bold text-slate-500 uppercase">Environment</span>
+              <span className="text-[9px] font-black text-white uppercase leading-tight line-clamp-2">{environment}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[7px] font-bold text-slate-500 uppercase">Formation Origin</span>
+              <span className="text-[9px] font-black text-white uppercase leading-tight line-clamp-2">{origin}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[7px] font-bold text-slate-500 uppercase">Industrial/Common Use</span>
+              <span className="text-[9px] font-black text-white uppercase leading-tight line-clamp-2">{commonUses}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Physical Analytics Block */}
+        <div className="bg-slate-950/80 backdrop-blur-md border border-slate-800 rounded-xl p-4 shadow-2xl">
           <span className="text-[9px] font-black text-emerald-500 uppercase tracking-[0.2em] block mb-3 border-b border-emerald-900/30 pb-1">Phy-Analytics</span>
           <div className="space-y-2">
             <div className="flex justify-between items-center gap-4">
@@ -218,9 +246,9 @@ export const SpecimenViewer3D: React.FC<{ identification: RockIdentification }> 
 
       <Canvas shadows>
         <PerspectiveCamera makeDefault position={[0, 0, 4]} />
-        <ambientLight intensity={0.5} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} castShadow />
-        <pointLight position={[-10, -10, -10]} intensity={1} color="#3b82f6" />
+        <AmbientLight intensity={0.5} />
+        <SpotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} castShadow />
+        <PointLight position={[-10, -10, -10]} intensity={1} color="#3b82f6" />
         
         <RockModel identification={identification} />
         
