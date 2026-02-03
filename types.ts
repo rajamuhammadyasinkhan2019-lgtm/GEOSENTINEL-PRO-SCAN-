@@ -4,12 +4,12 @@ export type ScanningMode = 'FIELD' | 'THIN_SECTION';
 
 export interface RockIdentification {
   name: string;
-  lithology: string; // Igneous, Sedimentary, Metamorphic
+  lithology: string;
   confidence: number;
   metadata: {
     texture: string;
-    composition: string; // Mineral composition
-    environment: string; // Formation environment
+    composition: string;
+    environment: string;
     origin: string;
     commonUses: string;
     rarity: 'Common' | 'Uncommon' | 'Rare' | 'Very Rare';
@@ -21,22 +21,29 @@ export interface RockIdentification {
   };
   provenance: {
     roundness: 'Angular' | 'Sub-angular' | 'Sub-rounded' | 'Rounded';
-    transportDistance: string; // Estimations like "Short (0-5km)", "Long (>50km)"
-    sourceProximity: string; // Near source, Distal, etc.
+    transportDistance: string;
+    sourceProximity: string;
   };
   petrography?: {
-    mineralEstimatedPercentages: Record<string, string>;
-    opticalFeatures: string[]; // e.g., "Plagioclase twinning", "Opaque grains"
-    grainBoundaries: string; // e.g., "Sutured", "Interlocking"
-    classification: string; // e.g., "Wacke", "Porphyritic"
+    primaryMinerals: Record<string, string>;
+    accessoryMinerals: Record<string, string>;
+    opticalFeatures: string[];
+    grainBoundaries: string;
+    classification: string;
   };
   biogenicVerification?: {
     isFossil: boolean;
     fossilType?: string;
     confidence: number;
-    analysisNote: string; // Why it's a fossil or pseudofossil
+    analysisNote: string;
   };
   geologicalAge?: string;
+}
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+  sources?: { title: string; uri: string }[];
 }
 
 export interface ScanResult {
@@ -44,6 +51,7 @@ export interface ScanResult {
   timestamp: number;
   capturedFrame: string;
   mode: ScanningMode;
+  visualizedEnvironmentUrl?: string;
 }
 
 export interface AppState {
@@ -53,4 +61,7 @@ export interface AppState {
   lastResult: ScanResult | null;
   history: ScanResult[];
   error: string | null;
+  isVisualizing: boolean;
+  chatHistory: ChatMessage[];
+  isChatting: boolean;
 }

@@ -1,6 +1,6 @@
 {
-  "name": "GeoSentinel Scan",
-  "description": "An instant geological rock and mineral scanner with drainage-aware intelligence, designed for field explorers and surveyors.",
+  "name": "GeoSentinel Pro Scan",
+  "description": "High-fidelity geological analysis platform utilizing Gemini 3 Pro reasoning for professional field and lab petrography.",
   "requestFramePermissions": [
     "camera"
   ]
