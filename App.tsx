@@ -267,6 +267,24 @@ const App: React.FC = () => {
                       </div>
 
                       <div className="space-y-8">
+                        <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl space-y-4">
+                           <span className="text-[10px] font-black text-cyan-500 uppercase tracking-widest block border-b border-cyan-900/50 pb-2">Micro-Optical Parameters</span>
+                           <div className="grid grid-cols-1 gap-4">
+                              <div className="flex justify-between items-center">
+                                <span className="text-[9px] font-black text-slate-500 uppercase">Plag. Twinning</span>
+                                <span className="text-[10px] font-bold text-cyan-400">{state.lastResult.identification.petrography.plagioclase_twining_type || 'N/A'}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-[9px] font-black text-slate-500 uppercase">Qz Undulosity</span>
+                                <span className="text-[10px] font-bold text-cyan-400">{state.lastResult.identification.petrography.quartz_undulosity_level || 'N/A'}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-[9px] font-black text-slate-500 uppercase">Foliation Angle</span>
+                                <span className="text-[10px] font-bold text-cyan-400">{state.lastResult.identification.petrography.foliation_angle || 'N/A'}</span>
+                              </div>
+                           </div>
+                        </div>
+
                         <div className="space-y-4">
                           <span className="text-[10px] font-black text-cyan-600/80 uppercase tracking-widest block">Accessory / Trace</span>
                           <div className="flex flex-wrap gap-2">

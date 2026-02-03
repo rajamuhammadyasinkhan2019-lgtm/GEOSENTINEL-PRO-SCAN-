@@ -31,6 +31,9 @@ export interface RockIdentification {
     opticalFeatures: string[];
     grainBoundaries: string;
     classification: string;
+    plagioclase_twining_type?: string;
+    quartz_undulosity_level?: string;
+    foliation_angle?: string;
   };
   biogenicVerification?: {
     isFossil: boolean;

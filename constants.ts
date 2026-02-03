@@ -64,7 +64,10 @@ Return response in strict JSON:
     "accessoryMinerals": {"Zircon": "1%", "Apatite": "2%"},
     "opticalFeatures": ["Undulose extinction", "Albite twinning", "Reaction rims"],
     "grainBoundaries": "e.g. Sutured, Interlocking, or Embayed",
-    "classification": "Specific thin-section technical classification (e.g. QAPF/Wacke)"
+    "classification": "Specific thin-section technical classification (e.g. QAPF/Wacke)",
+    "plagioclase_twining_type": "e.g., Albite, Carlsbad, Pericline, or None detected",
+    "quartz_undulosity_level": "e.g., None, Weak, Moderate, or Strong",
+    "foliation_angle": "e.g., 45 degrees, Horizontal, or No preferred orientation"
   },
   "biogenicVerification": {
     "isFossil": boolean,
