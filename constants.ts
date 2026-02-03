@@ -37,12 +37,13 @@ MODES:
 
 Return response in strict JSON:
 {
-  "name": "Sample Identification",
+  "name": "Common Name (e.g. River Pebble)",
   "lithology": "Igneous/Sedimentary/Metamorphic",
+  "classification": "Technical name (e.g. Granodiorite, Quartz Arenite, Mylonite)",
   "confidence": 0.0-1.0,
   "metadata": {
-    "texture": "Texture description",
-    "composition": "Mineral composition",
+    "texture": "Highly detailed petrographic texture description. Must include: Grain size distribution (e.g., phaneritic, aphanitic, porphyritic), crystal/clast shape (e.g., euhedral, sub-rounded), arrangement (e.g., interlocking, matrix-supported), and fabric (e.g., foliated, massive, vesicular). Example: 'Medium-grained phaneritic with interlocking subhedral crystals of plagioclase and quartz, showing a slight gneissic foliation.'",
+    "composition": "Mineral composition summary",
     "environment": "Geological setting",
     "origin": "Formation context",
     "commonUses": "Applications",
@@ -63,7 +64,7 @@ Return response in strict JSON:
     "accessoryMinerals": {"Zircon": "1%", "Apatite": "2%"},
     "opticalFeatures": ["Undulose extinction", "Albite twinning", "Reaction rims"],
     "grainBoundaries": "e.g. Sutured, Interlocking, or Embayed",
-    "classification": "Technical classification (e.g. QAPF/Wacke)"
+    "classification": "Specific thin-section technical classification (e.g. QAPF/Wacke)"
   },
   "biogenicVerification": {
     "isFossil": boolean,
@@ -73,5 +74,5 @@ Return response in strict JSON:
   "geologicalAge": "Era/Period"
 }
 
-If mode is THIN_SECTION, be extremely specific about percentages in 'primaryMinerals'.
+If mode is THIN_SECTION, be extremely specific about percentages in 'primaryMinerals' and use microscopic terminology for 'texture'.
 `;

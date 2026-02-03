@@ -5,6 +5,7 @@ export type ScanningMode = 'FIELD' | 'THIN_SECTION';
 export interface RockIdentification {
   name: string;
   lithology: string;
+  classification: string;
   confidence: number;
   metadata: {
     texture: string;

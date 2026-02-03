@@ -2,12 +2,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ScannerView } from './components/ScannerView';
 import { Button } from './components/Button';
+import { SpecimenViewer3D } from './components/SpecimenViewer3D';
 import { DRAINAGE_REGIONS } from './constants';
 import { AppState, DrainageRegion, ScanResult, RockIdentification, ScanningMode, ChatMessage } from './types';
 import { identifyRock, visualizeEnvironment, askAssistant } from './geminiService';
 
 const App: React.FC = () => {
-  const [state, setState] = useState<AppState>({
+  const [state, setState] = useState<AppState & { viewMode: '2D' | '3D' }>({
     isScanning: true,
     mode: 'FIELD',
     selectedDrainage: 'Global',
@@ -16,7 +17,8 @@ const App: React.FC = () => {
     error: null,
     isVisualizing: false,
     chatHistory: [],
-    isChatting: false
+    isChatting: false,
+    viewMode: '3D'
   });
 
   const [isUploading, setIsUploading] = useState(false);
@@ -39,7 +41,8 @@ const App: React.FC = () => {
       ...prev,
       lastResult: result,
       chatHistory: [], // Reset chat for new specimen
-      history: [result, ...prev.history].slice(0, 10)
+      history: [result, ...prev.history].slice(0, 10),
+      viewMode: '3D' // Default to 3D for new identification
     }));
   };
 
@@ -68,7 +71,8 @@ const App: React.FC = () => {
     setState(prev => ({
       ...prev,
       lastResult: prev.lastResult ? { ...prev.lastResult, visualizedEnvironmentUrl: imageUrl || undefined } : null,
-      isVisualizing: false
+      isVisualizing: false,
+      viewMode: '2D' // Switch to 2D to show the result
     }));
   };
 
@@ -114,8 +118,8 @@ const App: React.FC = () => {
             <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">v4.5 Geologic Lab Suite</p>
           </div>
         </div>
-        <div className="hidden md:flex flex-col items-end">
-           <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 text-right italic">Analytical Head: Muhammad Yasin Khan</span>
+        <div className="hidden md:flex flex-col items-end text-right">
+           <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic">Analytical Head: Muhammad Yasin Khan</span>
            <span className="text-sm font-bold text-slate-200 uppercase tracking-tighter">Neural Lab System Active</span>
         </div>
       </header>
@@ -193,18 +197,32 @@ const App: React.FC = () => {
               </div>
             ) : state.lastResult ? (
               <div className="p-10 flex-1 flex flex-col gap-8 overflow-y-auto max-h-[85vh]">
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md ${
-                      state.lastResult.identification.lithology.toLowerCase().includes('igneous') ? 'bg-orange-500/20 text-orange-400' :
-                      state.lastResult.identification.lithology.toLowerCase().includes('sedimentary') ? 'bg-yellow-500/20 text-yellow-400' :
-                      'bg-purple-500/20 text-purple-400'
-                    }`}>{state.lastResult.identification.lithology}</span>
-                    <span className="text-[10px] font-black uppercase tracking-widest bg-slate-800 text-slate-400 px-3 py-1 rounded-md">
-                      {state.lastResult.identification.geologicalAge}
-                    </span>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-md ${
+                        state.lastResult.identification.lithology.toLowerCase().includes('igneous') ? 'bg-orange-500/20 text-orange-400' :
+                        state.lastResult.identification.lithology.toLowerCase().includes('sedimentary') ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-purple-500/20 text-purple-400'
+                      }`}>{state.lastResult.identification.lithology}</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest bg-slate-800 text-slate-400 px-3 py-1 rounded-md">
+                        {state.lastResult.identification.geologicalAge}
+                      </span>
+                    </div>
+                    <h4 className="text-4xl font-black text-white tracking-tighter italic">{state.lastResult.identification.name}</h4>
                   </div>
-                  <h4 className="text-4xl font-black text-white tracking-tighter italic">{state.lastResult.identification.name}</h4>
+                  
+                  {/* View Toggler */}
+                  <div className="flex bg-slate-950/50 p-1 rounded-xl border border-slate-800">
+                    <button 
+                      onClick={() => setState(prev => ({ ...prev, viewMode: '3D' }))}
+                      className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-tighter transition-all ${state.viewMode === '3D' ? 'bg-cyan-600 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+                    >3D Lab</button>
+                    <button 
+                      onClick={() => setState(prev => ({ ...prev, viewMode: '2D' }))}
+                      className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-tighter transition-all ${state.viewMode === '2D' ? 'bg-emerald-600 text-white' : 'text-slate-600 hover:text-slate-400'}`}
+                    >2D Context</button>
+                  </div>
                 </div>
 
                 {state.lastResult.mode === 'THIN_SECTION' && state.lastResult.identification.petrography ? (
@@ -284,20 +302,24 @@ const App: React.FC = () => {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                      {!state.lastResult.visualizedEnvironmentUrl ? (
-                        <Button onClick={triggerVisualization} isLoading={state.isVisualizing} variant="secondary" className="w-full rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 py-6">
-                          <span className="flex flex-col items-center gap-1">
-                            <span className="text-sm font-black tracking-widest uppercase">Initiate Recon</span>
-                            <span className="text-[8px] font-bold opacity-60">Generate Paleo-Environment</span>
-                          </span>
-                        </Button>
+                      {state.viewMode === '3D' ? (
+                        <SpecimenViewer3D identification={state.lastResult.identification} />
                       ) : (
-                        <div className="relative group overflow-hidden rounded-3xl border-2 border-emerald-500/20 shadow-xl">
-                          <img src={state.lastResult.visualizedEnvironmentUrl} className="w-full aspect-video object-cover" alt="Geological Visualization" />
-                          <div className="absolute bottom-4 left-6">
-                            <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em]">Paleo-Reconstruction</span>
+                        !state.lastResult.visualizedEnvironmentUrl ? (
+                          <Button onClick={triggerVisualization} isLoading={state.isVisualizing} variant="secondary" className="w-full rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 py-12">
+                            <span className="flex flex-col items-center gap-1">
+                              <span className="text-sm font-black tracking-widest uppercase">Initiate Recon</span>
+                              <span className="text-[8px] font-bold opacity-60">Generate Paleo-Environment</span>
+                            </span>
+                          </Button>
+                        ) : (
+                          <div className="relative group overflow-hidden rounded-3xl border-2 border-emerald-500/20 shadow-xl">
+                            <img src={state.lastResult.visualizedEnvironmentUrl} className="w-full aspect-video object-cover" alt="Geological Visualization" />
+                            <div className="absolute bottom-4 left-6">
+                              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.3em]">Paleo-Reconstruction</span>
+                            </div>
                           </div>
-                        </div>
+                        )
                       )}
 
                       <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-3xl p-6 space-y-4">
@@ -318,10 +340,12 @@ const App: React.FC = () => {
                     <div className="space-y-6">
                       <div className="bg-slate-800/30 p-6 rounded-3xl border border-slate-700/50">
                         <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Laboratory Notes</h5>
-                        <div className="space-y-4">
-                            <div>
-                              <span className="text-[9px] font-black text-slate-600 uppercase block mb-1">Textural Class</span>
-                              <p className="text-sm font-bold text-slate-200">{state.lastResult.identification.metadata.texture}</p>
+                        <div className="space-y-6">
+                            <div className="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/50">
+                              <span className="text-[9px] font-black text-emerald-500 uppercase block mb-2 tracking-widest">Textural Analysis</span>
+                              <p className="text-xs font-medium text-slate-200 leading-relaxed border-l-2 border-emerald-500/30 pl-3">
+                                {state.lastResult.identification.metadata.texture}
+                              </p>
                             </div>
                             <div>
                               <span className="text-[9px] font-black text-slate-600 uppercase block mb-1">Common Uses</span>

@@ -32,6 +32,10 @@
       50% { top: 100%; }
       100% { top: 0%; }
     }
+    .bg-grid {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
   </style>
 <script type="importmap">
 {
@@ -39,12 +43,15 @@
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "three": "https://esm.sh/three@0.170.0",
+    "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.17.10",
+    "@react-three/drei": "https://esm.sh/@react-three/drei@9.117.0",
     "@google/genai": "https://esm.sh/@google/genai@^1.37.0"
   }
 }
 </script>
 </head>
-<body>
+<body class="bg-grid">
   <div id="root"></div>
 </body>
 </html>
