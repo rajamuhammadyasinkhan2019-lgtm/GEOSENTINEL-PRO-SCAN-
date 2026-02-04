@@ -115,7 +115,7 @@ const App: React.FC = () => {
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tighter uppercase italic">GEOSENTINEL <span className={state.mode === 'THIN_SECTION' ? 'text-cyan-500' : 'text-emerald-500'}>PRO SCAN</span></h1>
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">v4.5 Geologic Lab Suite</p>
+            <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">V 1.0 Advanced Geological Field & Lab Suite</p>
           </div>
         </div>
         <div className="hidden md:flex flex-col items-end text-right gap-2">
@@ -242,29 +242,46 @@ const App: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                      <div className="space-y-5">
+                      {/* NEW Structured Mineral breakdown Table */}
+                      <div className="space-y-6">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-black text-cyan-600/80 uppercase tracking-widest">Primary Composition</span>
-                          <span className="text-[9px] font-bold text-slate-500 uppercase">Vol %</span>
+                          <span className="text-[10px] font-black text-cyan-500 uppercase tracking-widest">Mineral Modal Analysis</span>
+                          <span className="text-[9px] font-bold text-slate-500 uppercase">Volumetric %</span>
                         </div>
-                        <div className="space-y-4">
-                          {Object.entries(state.lastResult.identification.petrography.primaryMinerals || {}).map(([min, pct]) => {
-                            const val = parseInt(pct as string) || 0;
-                            return (
-                              <div key={min} className="space-y-2">
-                                <div className="flex justify-between items-center px-1">
-                                  <span className="text-xs font-bold text-slate-200">{min}</span>
-                                  <span className="text-xs font-black text-cyan-400">{pct as string}</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700/50">
-                                  <div 
-                                    className="h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)] transition-all duration-1000" 
-                                    style={{ width: `${val}%` }}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
+                        <div className="overflow-hidden rounded-2xl border border-cyan-900/50 bg-slate-900/40">
+                          <table className="w-full text-left border-collapse">
+                            <thead>
+                              <tr className="bg-cyan-950/20 border-b border-cyan-900/30">
+                                <th className="px-4 py-3 text-[9px] font-black text-cyan-600/80 uppercase tracking-widest">Mineral</th>
+                                <th className="px-4 py-3 text-[9px] font-black text-cyan-600/80 uppercase tracking-widest text-center">Cat.</th>
+                                <th className="px-4 py-3 text-[9px] font-black text-cyan-600/80 uppercase tracking-widest text-right">Vol%</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {/* Primary Minerals */}
+                              {Object.entries(state.lastResult.identification.petrography.primaryMinerals || {}).map(([min, pct]) => (
+                                <tr key={min} className="border-b border-cyan-900/20 hover:bg-cyan-900/10 transition-colors">
+                                  <td className="px-4 py-3 text-xs font-bold text-slate-200">{min}</td>
+                                  <td className="px-4 py-3 text-[8px] font-black text-cyan-500/70 uppercase text-center">Primary</td>
+                                  <td className="px-4 py-3 text-xs font-black text-cyan-400 text-right">{pct as string}</td>
+                                </tr>
+                              ))}
+                              {/* Accessory Minerals */}
+                              {Object.entries(state.lastResult.identification.petrography.accessoryMinerals || {}).map(([min, pct]) => (
+                                <tr key={min} className="border-b border-cyan-900/20 hover:bg-cyan-900/10 transition-colors">
+                                  <td className="px-4 py-3 text-xs font-medium text-slate-400">{min}</td>
+                                  <td className="px-4 py-3 text-[8px] font-black text-slate-600 uppercase text-center">Accessory</td>
+                                  <td className="px-4 py-3 text-xs font-black text-slate-500 text-right">{pct as string}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-800/50">
+                           <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest block mb-2">Total Estimated Volume</span>
+                           <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                              <div className="h-full bg-cyan-600 w-full animate-pulse"></div>
+                           </div>
                         </div>
                       </div>
 
@@ -285,18 +302,6 @@ const App: React.FC = () => {
                                 <span className="text-[10px] font-bold text-cyan-400">{state.lastResult.identification.petrography.foliation_angle || 'N/A'}</span>
                               </div>
                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                          <span className="text-[10px] font-black text-cyan-600/80 uppercase tracking-widest block">Accessory / Trace</span>
-                          <div className="flex flex-wrap gap-2">
-                            {Object.entries(state.lastResult.identification.petrography.accessoryMinerals || {}).map(([min, pct]) => (
-                              <div key={min} className="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-2">
-                                <span className="text-[10px] font-bold text-slate-400">{min}</span>
-                                <span className="text-[10px] font-black text-cyan-600/80">{pct as string}</span>
-                              </div>
-                            ))}
-                          </div>
                         </div>
 
                         <div className="space-y-4">
@@ -524,7 +529,7 @@ const App: React.FC = () => {
             <div className="bg-black/50 p-6 rounded-3xl border border-slate-800/50 space-y-3">
               <div className="flex justify-between items-center text-[9px] font-black uppercase">
                 <span className="text-slate-500">App Version</span>
-                <span className="text-white">v4.5.120-STABLE</span>
+                <span className="text-white">v1.0.120-STABLE</span>
               </div>
               <div className="flex justify-between items-center text-[9px] font-black uppercase">
                 <span className="text-slate-500">Petrology DB</span>

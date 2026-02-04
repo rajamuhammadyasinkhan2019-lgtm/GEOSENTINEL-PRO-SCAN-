@@ -153,7 +153,7 @@ const RockModel: React.FC<RockModelProps> = ({ identification }) => {
 export const SpecimenViewer3D: React.FC<{ identification: RockIdentification }> = ({ identification }) => {
   const confidencePercent = Math.round(identification.confidence * 100);
   const { hardness, grainSize, color } = identification.physicalCharacteristics;
-  const { environment, origin, commonUses } = identification.metadata;
+  const { environment, origin, commonUses, composition, rarity } = identification.metadata;
   
   return (
     <div className="w-full h-full min-h-[400px] bg-slate-900/40 rounded-3xl relative overflow-hidden border border-slate-800 shadow-inner group">
@@ -183,6 +183,38 @@ export const SpecimenViewer3D: React.FC<{ identification: RockIdentification }> 
         </div>
       </div>
 
+      {/* NEW: Petrographic Modal Analysis HUD (Right Side) */}
+      {identification.petrography && (
+        <div className="absolute top-32 right-6 z-10 flex flex-col items-end gap-3 pointer-events-none max-w-[180px]">
+          <div className="bg-slate-950/80 backdrop-blur-md border border-cyan-900/50 rounded-xl p-3 shadow-2xl w-full">
+            <span className="text-[8px] font-black text-cyan-500 uppercase tracking-[0.2em] block mb-2 border-b border-cyan-900/30 pb-1">Petro-Modal analysis</span>
+            <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
+              {/* Combine Primary & Accessory for HUD display */}
+              {Object.entries(identification.petrography.primaryMinerals || {}).map(([min, pct]) => (
+                <div key={min} className="flex justify-between items-center gap-2">
+                  <span className="text-[8px] font-bold text-slate-200 uppercase truncate">{min}</span>
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-8 h-0.5 bg-slate-800 rounded-full overflow-hidden">
+                      <div className="h-full bg-cyan-500" style={{ width: pct as string }}></div>
+                    </div>
+                    <span className="text-[8px] font-black text-cyan-400">{pct as string}</span>
+                  </div>
+                </div>
+              ))}
+              {Object.entries(identification.petrography.accessoryMinerals || {}).map(([min, pct]) => (
+                <div key={min} className="flex justify-between items-center gap-2 opacity-60">
+                  <span className="text-[8px] font-medium text-slate-400 uppercase truncate">{min}</span>
+                  <span className="text-[8px] font-black text-slate-500">{pct as string}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2 pt-2 border-t border-cyan-900/20">
+               <span className="text-[7px] font-black text-cyan-800 uppercase tracking-widest">Classification: {identification.petrography.classification}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Bottom Left Specs HUD (Physical + Contextual) */}
       <div className="absolute bottom-6 left-6 z-10 flex flex-col gap-3 pointer-events-none max-w-[220px]">
         {/* Contextual Metadata Block */}
@@ -196,6 +228,10 @@ export const SpecimenViewer3D: React.FC<{ identification: RockIdentification }> 
             <div className="flex flex-col">
               <span className="text-[7px] font-bold text-slate-500 uppercase">Formation Origin</span>
               <span className="text-[9px] font-black text-white uppercase leading-tight line-clamp-2">{origin}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[7px] font-bold text-slate-500 uppercase">Composition</span>
+              <span className="text-[9px] font-black text-slate-300 uppercase leading-tight line-clamp-2 italic">{composition}</span>
             </div>
             <div className="flex flex-col">
               <span className="text-[7px] font-bold text-slate-500 uppercase">Industrial/Common Use</span>
@@ -215,6 +251,10 @@ export const SpecimenViewer3D: React.FC<{ identification: RockIdentification }> 
             <div className="flex justify-between items-center gap-4">
               <span className="text-[8px] font-bold text-slate-500 uppercase">Grains</span>
               <span className="text-[10px] font-black text-white uppercase truncate max-w-[80px] text-right">{grainSize}</span>
+            </div>
+            <div className="flex justify-between items-center gap-4">
+              <span className="text-[8px] font-bold text-slate-500 uppercase">Rarity</span>
+              <span className={`text-[10px] font-black uppercase ${rarity === 'Rare' || rarity === 'Very Rare' ? 'text-orange-500' : 'text-slate-400'}`}>{rarity}</span>
             </div>
             <div className="flex justify-between items-center gap-4">
               <span className="text-[8px] font-bold text-slate-500 uppercase">Hue</span>
