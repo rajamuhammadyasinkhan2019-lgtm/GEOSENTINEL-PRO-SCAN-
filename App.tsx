@@ -120,7 +120,10 @@ const App: React.FC = () => {
         </div>
         <div className="hidden md:flex flex-col items-end text-right gap-2">
            <div className="flex flex-col items-end">
-             <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic">Analytical Head: Muhammad Yasin Khan</span>
+             <a href="https://www.facebook.com/muhammad.yasin.khan.857718" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2">
+               <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1 italic group-hover:text-emerald-400 transition-colors">Analytical Head: Muhammad Yasin Khan</span>
+               <svg className="w-3 h-3 text-emerald-600 group-hover:text-emerald-400 mb-1" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-8.74h-2.94v-3.403h2.94v-2.511c0-2.91 1.777-4.496 4.375-4.496 1.243 0 2.311.092 2.622.134v3.039l-1.799.001c-1.411 0-1.685.671-1.685 1.655v2.172h3.364l-.438 3.403h-2.926v8.742h6.199c.732 0 1.325-.593 1.325-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+             </a>
              <span className="text-sm font-bold text-slate-200 uppercase tracking-tighter">Neural Lab System Active</span>
            </div>
         </div>
@@ -490,7 +493,12 @@ const App: React.FC = () => {
             </p>
             <div className="pt-4 border-t border-slate-800/50">
               <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-2 italic underline underline-offset-4 decoration-emerald-900">Expert App Architect</p>
-              <p className="text-sm font-black text-white uppercase tracking-tighter italic">Muhammad Yasin Khan</p>
+              <div className="flex items-center gap-3">
+                <p className="text-sm font-black text-white uppercase tracking-tighter italic">Muhammad Yasin Khan</p>
+                <a href="https://www.facebook.com/muhammad.yasin.khan.857718" target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:text-emerald-400 transition-colors">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-8.74h-2.94v-3.403h2.94v-2.511c0-2.91 1.777-4.496 4.375-4.496 1.243 0 2.311.092 2.622.134v3.039l-1.799.001c-1.411 0-1.685.671-1.685 1.655v2.172h3.364l-.438 3.403h-2.926v8.742h6.199c.732 0 1.325-.593 1.325-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>
+                </a>
+              </div>
               <p className="text-[9px] font-bold text-slate-500 uppercase mt-1 tracking-widest">Lead Systems Engineer & Geologist</p>
             </div>
           </div>
